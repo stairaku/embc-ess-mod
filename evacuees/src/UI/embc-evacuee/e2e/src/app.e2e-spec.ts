@@ -23,42 +23,54 @@ describe('Evacuee Test Cases', () => {
   });
 
   //Verifying Main Path:
-  it('Main Path', () => {
-
-    var until = ExpectedConditions;
-
+  it('Main Path with same Residence and Mailing BC Address ', () => {
     page.navigateTo();
-
-    //Collection Notice & Authorization Page
-    element(by.id('mat-checkbox-1')).click();
-    element(by.buttonText('Next')).click();
-
-    //Restriction Page
-    element(by.id('mat-radio-2')).click();
-    expect(element(by.id('mat-radio-2')).getAttribute('value')).toEqual('true');
-    element(by.buttonText('Next - Create Account')).click();
-
-    //Create Profile Page - Personal Details
-    fillFormInput(element(by.formControlName('firstName')), 'Test First Name');
-    fillFormInput(element(by.formControlName('lastName')), 'Test Last Name');
-    fillFormInput(element(by.formControlName('preferredName')), 'Test');
-    fillFormInput(element(by.formControlName('initials')), 'TT');
-    fillFormComboBox(element(by.formControlName('gender')), '.mat-option-text', 'Male');
-    fillFormInput(element(by.formControlName('dateOfBirth')), '01/01/1990');
-    element(by.buttonText('Next - Primary & Mailing Address')).click();
-
-    //Create Profile Page - Address
-    var isBCAdressOption = element(by.formControlName('isBcAddress'));
-    selectRadioButton(isBCAdressOption,'mat-radio-button',0);
-    expect(element(by.tagName('app-bc-address')).isDisplayed()).toBe(true);
-    element(by.css('[data-placeholder = "Address Line 1"]')).sendKeys("123 Main St.");
-    element(by.css('[data-placeholder = "Address Line 2"]')).sendKeys("Apt 111");
-    element(by.css('[data-placeholder = "City"]')).sendKeys("Vancouver");
-    element(by.css('[data-placeholder = "Postal Code"]')).sendKeys("V6Z 1E4");
-
-    fillFormComboBox(element(by.formControlName('isNewMailingAddress')),'mat-radio-input cdk-visually-hidden', 'Yes');
-
-    browser.sleep(5000000);
+    page.collectionNoticePositive();
+    page.restrictionSharingInfoYes();
+    page.personalDetails('TestName', 'TestLastName', 'TestPreferredName', 'TT', 'Female', '01/09/1990');
+    browser.sleep(1000);
+    page.bcPrimaryResidenceYes('123 Main St', 'Apt 555', 'Wes', 2, 'V6Z1E5');
+    page.sameMailingAddressYes();
+    page.addressPageNextButton();
+    browser.sleep(1000);
+    page.contactTelephoneNumber('9999999999');
+    page.emailAddress('test@test.com', 'test@test.com');
+    page.contactPageNextButton();
+    browser.sleep(1000);
+    page.securityWord('securityWord');
+    page.createEvacuationFileButton();
+    page.evacuatedFromPrimaryAddress(0);
+    page.insuranceOptions(3);
+    page.evacuatedFromNextButton();
+    browser.sleep(1000);
+    page.addFamilyMembers('TestFamilyName', 'TestFamilyLastname', 'INIT', 2, '09/09/1989'); //Male
+    page.addFamilyMembers('TestFamilyName2', 'TestFamilyLastname2', 'INIT2', 3, '09/09/1990'); //Female
+    page.familyMembersValidation(2);
+    page.dietaryRequirements(0);
+    browser.sleep(1000);
+    page.medicationRequirements(1);
+    browser.sleep(1000);
+    page.familyMembersNextButton();
+    browser.sleep(1000);
+    page.addPets('hamster', 7);
+    page.petsValidation(1);
+    page.petsFood(0);
+    page.petNextButton();
+    browser.sleep(1000);
+    page.needsForm(0, 1, 2, 0, 1);
+    page.needsNextButton();
+    browser.sleep(1000);
+    page.personalDetailsValidation('TestLastName', 'TestName', 'TestPreferredName', 'TT', '01/09/1990', 'Female');
+    page.primaryAddressValidation('123 Main St', 'Apt 555', 'West Vancouver', 'V6Z1E5', 'British Columbia', 'Canada');
+    page. mailingAddressValidation('123 Main St', 'Apt 555', 'West Vancouver', 'V6Z1E5', 'British Columbia', 'Canada');
+    page.contactDetailsValidation('999-999-9999', '999-999-9999', 'test@test.com');
+    page.evacuatedFromValidation('123 Main St Apt 555', 'West Vancouver, British Columbia, V6Z1E5');
+    page.insuranceFromValidation('Unsure');
+    page.familyMembersValidationBeforeSubmit(['TestFamilyLastname', 'TestFamilyName', '', 'INIT', '09/09/1989', 'Female', 'TestFamilyLastname2', 'TestFamilyName2', '', 'INIT2', '09/09/1990', 'X']);
+    page.familyMedDietReqsValidation('false', 'true');
+    page.petsValidationBeforeSubmit(['hamster', '7']);
+    page.needsIdentifiedValidation('true', 'false', "I'm not sure", 'true', 'false');
+     
   });
 
 
@@ -69,26 +81,5 @@ describe('Evacuee Test Cases', () => {
       level: logging.Level.SEVERE,
     } as logging.Entry));
   });
-
-  async function fillFormInput(element: ElementFinder, text: string) {
-    await element.click();
-    await element.sendKeys(text);
-    browser.waitForAngular();
-  }
-
-  async function fillFormComboBox(mainElement: ElementFinder, className: string, option: string) {
-    await mainElement.click();
-    //await element.sendKeys(text);
-    element(by.cssContainingText(className, option)).click();
-    browser.waitForAngular();
-  }
-
-  async function selectRadioButton(mainElement: ElementFinder, tagName: string, option: number) {
-    mainElement.all(by.tagName(tagName)).then((items) =>{
-      items[option].click();
-      browser.waitForAngular();
-
-    });
-  }
 
 });

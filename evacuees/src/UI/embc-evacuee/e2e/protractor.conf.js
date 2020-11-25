@@ -8,19 +8,49 @@ const { SpecReporter, StacktraceOption } = require('jasmine-spec-reporter');
  * @type { import("protractor").Config }
  */
 exports.config = {
-  allScriptsTimeout: 11000,
+  allScriptsTimeout: 180000,
   specs: [
     './src/**/*.e2e-spec.ts'
   ],
-  capabilities: {
-    browserName: 'chrome'
+ 
+  browserstackUser: process.env.BROWSERSTACK_USERNAME || 'suetairaku1',
+  browserstackKey: process.env.BROWSERSTACK_ACCESS_KEY || 'wtbi3h5fHXfapXGAqnZz',
+
+  // capabilities: {
+  //   browserName: 'edge'
+  // },
+  
+  commonCapabilities: {
+    'build': 'embc-protractor-browserstack',
+    'name': 'Non-Verified Registrant Tests',
+    'browserstack.debug': 'true',
+    'browserstack.networkLogs': 'true'
+    //"browserstack.idleTimeout": 18000
   },
-  directConnect: true,
-  baseUrl: 'http://localhost:4200/',
+
+  multiCapabilities: [{
+  //   'browserName': 'Chrome',
+  //   'browser_version': 'latest',
+  //   'os': 'Windows',
+  //   'os_version': '10'
+  // },{
+    // 'browserName': 'Edge',
+    // 'browser_version': 'latest',
+    // 'os': 'Windows',
+    // 'os_version': '10'
+  // },{
+    'browserName': 'Firefox',
+    'browser_version': 'latest',
+    'os': 'Windows',
+    'os_version': '10'
+  }],
+
+  directConnect: false,
+  baseUrl: 'https://era-registrants-test.pathfinder.gov.bc.ca/non-verified-registration/collection-notice', //'http://localhost:4200/',
   framework: 'jasmine',
   jasmineNodeOpts: {
     showColors: true,
-    defaultTimeoutInterval: 30000,
+    defaultTimeoutInterval: 180000,
     print: function() {}
   },
   onPrepare() {
@@ -34,3 +64,8 @@ exports.config = {
     }));
   }
 };
+
+//Code to support common capabilities
+exports.config.multiCapabilities.forEach(function(caps){
+  for(var i in exports.config.commonCapabilities) caps[i] = caps[i] || exports.config.commonCapabilities[i];
+});

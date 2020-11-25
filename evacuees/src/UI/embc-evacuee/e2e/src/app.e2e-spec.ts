@@ -26,7 +26,9 @@ describe('Evacuee Test Cases', () => {
   it('Main Path with same Residence and Mailing BC Address ', () => {
     page.navigateTo();
     page.collectionNoticePositive();
+    browser.sleep(1000);
     page.restrictionSharingInfoYes();
+    browser.sleep(1000);
     page.personalDetails('TestName', 'TestLastName', 'TestPreferredName', 'TT', 'Female', '01/09/1990');
     browser.sleep(1000);
     page.bcPrimaryResidenceYes('123 Main St', 'Apt 555', 'Wes', 2, 'V6Z1E5');
@@ -35,16 +37,22 @@ describe('Evacuee Test Cases', () => {
     browser.sleep(1000);
     page.contactTelephoneNumber('9999999999');
     page.emailAddress('test@test.com', 'test@test.com');
+    browser.sleep(1000);
     page.contactPageNextButton();
     browser.sleep(1000);
     page.securityWord('securityWord');
+    browser.sleep(1000);
     page.createEvacuationFileButton();
+    browser.sleep(1000);
     page.evacuatedFromPrimaryAddress(0);
     page.insuranceOptions(3);
+    browser.sleep(1000);
     page.evacuatedFromNextButton();
     browser.sleep(1000);
     page.addFamilyMembers('TestFamilyName', 'TestFamilyLastname', 'INIT', 2, '09/09/1989'); //Male
+    browser.sleep(1000);
     page.addFamilyMembers('TestFamilyName2', 'TestFamilyLastname2', 'INIT2', 3, '09/09/1990'); //Female
+    browser.sleep(2000);
     page.familyMembersValidation(2);
     page.dietaryRequirements(0);
     browser.sleep(1000);
@@ -53,13 +61,14 @@ describe('Evacuee Test Cases', () => {
     page.familyMembersNextButton();
     browser.sleep(1000);
     page.addPets('hamster', 7);
+    browser.sleep(1000);
     page.petsValidation(1);
     page.petsFood(0);
     page.petNextButton();
     browser.sleep(1000);
     page.needsForm(0, 1, 2, 0, 1);
     page.needsNextButton();
-    browser.sleep(1000);
+    browser.sleep(2000);
     page.personalDetailsValidation('TestLastName', 'TestName', 'TestPreferredName', 'TT', '01/09/1990', 'Female');
     page.primaryAddressValidation('123 Main St', 'Apt 555', 'West Vancouver', 'V6Z1E5', 'British Columbia', 'Canada');
     page. mailingAddressValidation('123 Main St', 'Apt 555', 'West Vancouver', 'V6Z1E5', 'British Columbia', 'Canada');
@@ -74,12 +83,12 @@ describe('Evacuee Test Cases', () => {
   });
 
 
-  afterEach(async () => {
-    // Assert that there are no errors emitted from the browser
-    const logs = await browser.manage().logs().get(logging.Type.BROWSER);
-    expect(logs).not.toContain(jasmine.objectContaining({
-      level: logging.Level.SEVERE,
-    } as logging.Entry));
-  });
+  // afterEach(async () => {
+  //   // Assert that there are no errors emitted from the browser
+  //   const logs = await browser.manage().logs().get(logging.Type.BROWSER);
+  //   expect(logs).not.toContain(jasmine.objectContaining({
+  //     level: logging.Level.SEVERE,
+  //   } as logging.Entry));
+  // });
 
 });

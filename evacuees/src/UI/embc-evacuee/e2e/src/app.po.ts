@@ -1,4 +1,4 @@
-import { browser, by, element, Key, ElementFinder, ExpectedConditions} from 'protractor';
+import { browser, by, element, ElementFinder} from 'protractor';
 
 by.addLocator('formControlName', function (value, opt_parentElement) {
   var using = opt_parentElement || document;
@@ -10,7 +10,6 @@ by.addLocator('formGroupName', function (value, opt_parentElement) {
   return using.querySelectorAll('[formgroupname="' + value + '"]');
 });
 
-let EC = ExpectedConditions;
 
 export class AppPage {
   navigateTo(): Promise<unknown> {
@@ -25,12 +24,14 @@ export class AppPage {
   //Create Non-Verified Profile Page - Collection Notice & Authorization:
   collectionNoticePositive(){
     element(by.id('mat-checkbox-1')).click();
-    expect(element(by.id('mat-checkbox-1-input')).isSelected()).toBeTruthy();
-    element(by.buttonText('Next')).click();
+    expect(element(by.id('mat-checkbox-1-input')).isSelected()).toBe(true);
+    let nextButton = element(by.buttonText('Next'));
+    clickButton(nextButton);
   }
 
   collectionNoticeNegative(){
-    element(by.buttonText('Next')).click();
+    let nextButton = element(by.buttonText('Next'));
+    clickButton(nextButton);
     expect(element(by.xpath("//*[contains(text(),'To register with the Evacuee Registration & Assistance (ERA) tool')]")).isDisplayed()).toBeTruthy();
     expect(element(by.buttonText('Close')).isDisplayed()).toBeTruthy();
   }
@@ -38,15 +39,18 @@ export class AppPage {
 
    //Create Non-Verified Profile Page - Restriction Page:
    restrictionSharingInfoYes(){
-    element(by.id('mat-radio-2')).click();
-    expect(element(by.id('mat-radio-2-input')).isSelected()).toBeTruthy();
-    element(by.buttonText('Next - Create Account')).click();
+    selectRadioButton(element(by.formControlName('restrictedAccess')),'mat-radio-button', 0);
+    // element(by.id('mat-radio-2')).click();
+    // expect(element(by.id('mat-radio-2-input')).isSelected()).toBeTruthy();
+    let nextButton = element(by.buttonText('Next - Create Account'));
+    clickButton(nextButton);
    }
 
    restrictionSharingInfoNo(){
-    element(by.id('mat-radio-3')).click();
-    expect(element(by.id('mat-radio-3-input')).isSelected()).toBeTruthy();
-    element(by.buttonText('Next - Create Account')).click();
+    selectRadioButton(element(by.formControlName('restrictedAccess')),'mat-radio-button', 1);
+    //expect(element(by.id('mat-radio-3-input')).isSelected()).toBeTruthy();
+    let nextButton = element(by.buttonText('Next - Create Account'));
+    clickButton(nextButton);
    }
   
 
@@ -59,7 +63,9 @@ export class AppPage {
     fillFormDropDownByText(element(by.formControlName('gender')), '.mat-option-text', gender);
     browser.sleep(1000);
     fillFormInput(element(by.formControlName('dateOfBirth')), dateOfBirth);
-    element(by.buttonText('Next - Primary & Mailing Address')).click();
+    browser.sleep(1000);
+    let nextPersonalDetailsButton = element(by.buttonText('Next - Primary & Mailing Address'));
+    clickButton(nextPersonalDetailsButton);
   }
 
 
@@ -67,24 +73,24 @@ export class AppPage {
   bcPrimaryResidenceYes(address1: string, address2: string, city:string, cityOption: number, zipCode: string){
     var isBCAdressOption = element(by.formControlName('isBcAddress'));
     selectRadioButton(isBCAdressOption,'mat-radio-button',0);
-    browser.sleep(1000);
-    expect(element(by.tagName('app-bc-address')).isDisplayed()).toBe(true);
+    browser.sleep(5000);
+    //expect(element(by.tagName('app-bc-address')).all(by.tagName('div')).first().isDisplayed()).toBeTruthy();
     fillFormInput(element(by.css('[data-placeholder = "Address Line 1"]')), address1);
     fillFormInput(element(by.css('[data-placeholder = "Address Line 2"]')), address2);
-    element(by.css('[data-placeholder = "City"]')).sendKeys(city);
+    fillFormInput(element(by.css('input[data-placeholder = "City"]')), city);
+    browser.sleep(1000);
     fillFormDropDownByIndex(element(by.css('div[id*="mat-autocomplete"]')), 'mat-option', cityOption);
     browser.sleep(1000);
     fillFormInput(element(by.css('[data-placeholder = "Postal Code"]')), zipCode);
-    
   }
     
   bcPrimaryResidenceNo(country: string, countryOption: number, address1: string, address2: string, city: string, zipCode: string){
     var isBCAdressOption = element(by.formControlName('isBcAddress'));
     selectRadioButton(isBCAdressOption,'mat-radio-button',1);
-    expect(element(by.formGroupName('address')).isDisplayed()).toBeTruthy();
+    expect(element(by.formGroupName('address')).isDisplayed()).toBe(true);
     fillFormInput(element(by.formControlName('country')), country);
     browser.sleep(1000);
-    expect(element(by.css('div[id*="mat-autocomplete"]')).isDisplayed()).toBeTruthy();
+    expect(element(by.css('div[id*="mat-autocomplete"]')).isDisplayed()).toBe(true);
     fillFormDropDownByIndex(element(by.css('div[id*="mat-autocomplete"]')), 'mat-option', countryOption);
     fillFormInput(element(by.css('[data-placeholder = "Address Line 1"]')), address1);
     fillFormInput(element(by.css('[data-placeholder = "Address Line 2"]')), address2);
@@ -106,7 +112,7 @@ export class AppPage {
     expect(element(by.tagName('app-bc-address')).isDisplayed()).toBe(true);
     fillFormInput(element(by.css('[data-placeholder = "Address Line 1"]')), address1);
     fillFormInput(element(by.css('[data-placeholder = "Address Line 2"]')), address2);
-    fillFormInput(element(by.css('[data-placeholder = "City"]')), city);
+    fillFormInput(element(by.css('input[data-placeholder = "City"]')), city);
     browser.sleep(1000);
     fillFormDropDownByIndex(element(by.css('div[id*="mat-autocomplete"]')), 'mat-option', cityOption);
     fillFormInput(element(by.css('[data-placeholder = "Postal Code"]')), zipCode);
@@ -130,7 +136,8 @@ export class AppPage {
   }
 
   addressPageNextButton(){
-    element(by.buttonText('Next - Contact Information')).click();
+    let nextButton = element(by.buttonText('Next - Contact Information'));
+    clickButton(nextButton);
   }
 
 
@@ -141,7 +148,7 @@ export class AppPage {
 
   notWillingPhoneNumber(){
     element(by.formControlName('hidePhoneRequired')).click();
-    expect(element(by.formControlName('hidePhoneRequired')).isSelected()).toBeTruthy();
+    expect(element(by.formControlName('hidePhoneRequired')).isSelected()).toBe(true);
   }
 
   emailAddress(emailAddress: string, confirmEmailAddress: string){
@@ -155,17 +162,18 @@ export class AppPage {
 
   notwillingEmailAddress(){
     element(by.formControlName('hideEmailRequired')).click();
-    expect(element(by.formControlName('hideEmailRequired')).isSelected()).toBeTruthy();
+    expect(element(by.formControlName('hideEmailRequired')).isSelected()).toBe(true);
   }
 
   notWillingContactInfoValidation(){
-    expect(element(by.formControlName('hidePhoneRequired')).isSelected()).toBeTruthy();
-    expect(element(by.formControlName('hideEmailRequired')).isSelected()).toBeTruthy();
+    expect(element(by.formControlName('hidePhoneRequired')).isSelected()).toBe(true);
+    expect(element(by.formControlName('hideEmailRequired')).isSelected()).toBe(true);
     expect(element(by.cssContainingText('span', ' if you are not able to provide an email address or contact telephone number, should you be eligible for emergency supports due to an evacuation, you will not be able to receive an e-Transfer. ')).isDisplayed()).toBeTruthy();
   }
 
   contactPageNextButton(){
-    element(by.buttonText('Next - Security Question')).click();
+    let securityQuestionButton = element(by.buttonText('Next - Security Question'));
+    clickButton(securityQuestionButton);
   }
 
 
@@ -175,7 +183,9 @@ export class AppPage {
   }
 
   createEvacuationFileButton(){
-    element(by.buttonText('Next - Create Evacuation File')).click();
+    let createEvacuationButton = element(by.buttonText('Next - Create Evacuation File'));
+    clickButton(createEvacuationButton);
+
   }
 
 
@@ -189,32 +199,36 @@ export class AppPage {
   }
 
   evacuatedFromNextButton() {
-    expect(element(by.cssContainingText('span','Next - Family Information')).isDisplayed()).toBeTruthy();
-    element(by.cssContainingText('span','Next - Family Information')).click();
+    let nextButton = element(by.cssContainingText('span','Next - Family Information')).element(by.xpath('ancestor::button'))
+    clickButton(nextButton);
   }
 
 
   //Submit Evacuation File - Family Members:
   addFamilyMembers(firstName: string, lastName:string, initials: string, gender: number, dateOfBirth: string){
-    element(by.buttonText('+ Add Family Member')).click();
-    browser.sleep(1000);
+    var addFamilyButton = element(by.buttonText('+ Add Family Member'));
+    clickButton(addFamilyButton);
+    browser.sleep(2000);
     let memberForm = element(by.tagName('app-person-detail-form'));
     fillFormInput(memberForm.element(by.css('[data-placeholder = "First Name"]')), firstName);
     fillFormInput(memberForm.element(by.css('[data-placeholder = "Last Name"]')), lastName);
     fillFormInput(memberForm.element(by.css('[data-placeholder = "Initials"]')), initials);
-    element(by.css('mat-select[id*="mat-select"]')).click();
+    var genderSelect = element(by.css('mat-select[id*="mat-select"]'));
+    clickButton(genderSelect);
+    browser.sleep(1000);
     fillFormDropDownByIndex(element(by.css('div[id*="mat-select"][id$="panel"]')), '.mat-option', gender);
     browser.sleep(1000);
     fillFormInput(memberForm.element(by.css('[data-placeholder = "mm/dd/yyyy"]')), dateOfBirth);
-    element(by.buttonText('Save')).click();
-    element(by.buttonText('Save')).click();
+    var saveFamilyButton = element(by.buttonText('Save'));
+    clickButton(saveFamilyButton);
+    clickButton(saveFamilyButton);
   }
 
   familyMembersValidation(count: number) {
     let membersSection = element(by.tagName('app-family-information'));
-    expect(membersSection.isDisplayed()).toBeTruthy();
+    expect(membersSection.isDisplayed()).toBe(true);
     let membersTable = membersSection.element(by.tagName('mat-table'));
-    expect(membersTable.isDisplayed()).toBeTruthy();
+    expect(membersTable.isDisplayed()).toBe(true);
     expect(membersTable.all(by.tagName('mat-row')).count()).toBe(count);
 
   }
@@ -228,19 +242,22 @@ export class AppPage {
   }
 
   familyMembersNextButton() {
-    element(by.buttonText('Next - Pets')).click();
+    let familyNextButton = element(by.buttonText('Next - Pets'));
+    clickButton(familyNextButton);
   }
 
 
   //Submit Evacuation File - Pets:
   addPets(petType: string, howMany: number){
-    element(by.buttonText('+ Add Pets')).click();
-    fillFormInput(element(by.css('[data-placeholder = "Pet Type i.e. dog/cat/hamster"]')), petType);
+    let addPetsButton = element(by.buttonText('+ Add Pets'));
+    clickButton(addPetsButton);
+    browser.sleep(1000);
+    fillFormInput(element(by.css('input[data-placeholder = "Pet Type i.e. dog/cat/hamster"]')), petType);
     element(by.css('mat-select[id*="mat-select"]')).click();
     fillFormDropDownByIndex(element(by.css('div[id*="mat-select"][id$="panel"]')), '.mat-option', howMany);
     browser.sleep(1000);
-    element(by.buttonText('Save')).click();
-    //element(by.buttonText('Save')).click();
+    let savePetButton = element(by.buttonText('Save'));
+    clickButton(savePetButton);
   }
 
   petsValidation(count: number) {
@@ -259,28 +276,26 @@ export class AppPage {
   }
 
   petNextButton(){
-    element(by.buttonText('Next - Identify Needs')).click();
+    let petNextButton = element(by.cssContainingText('span','Next - Identify Needs')).element(by.xpath('ancestor::button'))
+    clickButton(petNextButton);
   }
 
 
   //Submit Evacuation File - Needs:
-  needsForm(foodOption: number, lodgingOption: number, clothingOption: number, transportOption: number, incidentalOption: number){
-    
+  needsForm(foodOption: number, lodgingOption: number, clothingOption: number, transportOption: number, incidentalOption: number){  
     selectRadioButton(element(by.formControlName('requiresFood')), 'mat-radio-button', foodOption);
-   
     selectRadioButton(element(by.formControlName('requiresLodging')), 'mat-radio-button', lodgingOption);
     
     selectRadioButton(element(by.formControlName('requiresClothing')), 'mat-radio-button', clothingOption);
     selectRadioButton(element(by.formControlName('requiresClothing')), 'mat-radio-button', clothingOption);
     
     selectRadioButton(element(by.formControlName('requiresTransportation')), 'mat-radio-button', transportOption);
-    
     selectRadioButton(element(by.formControlName('requiresIncidentals')), 'mat-radio-button', incidentalOption);
   }
 
   needsNextButton(){
-    expect(element(by.buttonText('Next - Review Submission')).isDisplayed()).toBeTruthy();
-    element(by.buttonText('Next - Review Submission')).click();
+    let needsNextButton = element(by.buttonText('Next - Review Submission'));
+    clickButton(needsNextButton);
   }
 
 
@@ -417,7 +432,8 @@ export class AppPage {
   }
 
   saveNSubmitButton(){
-    element(by.buttonText('Save & Submit')).click();
+    let saveSubmitButton = element(by.buttonText('Save & Submit'));
+    clickButton(saveSubmitButton);
   }
 
 }
@@ -430,13 +446,13 @@ async function fillFormInput(element: ElementFinder, text: string) {
 
 async function fillFormDropDownByText(mainElement: ElementFinder, className: string, selectedOption: string) {
   await mainElement.click();
-  await expect(element(by.cssContainingText(className, selectedOption)).isDisplayed()).toBe(true);
+  //expect(element(by.cssContainingText(className, selectedOption)).isDisplayed()).toBe(true);
   await element(by.cssContainingText(className, selectedOption)).click();
   browser.waitForAngular();
 }
 
 async function fillFormDropDownByIndex(mainElement: ElementFinder, tagName: string, selectedIndex: number) {
-  await expect(mainElement.isDisplayed()).toBeTruthy();
+  //await expect(mainElement.isDisplayed()).toBeTruthy();
   let list = mainElement.all(by.css(tagName));
   await list.get(selectedIndex).click();
   browser.waitForAngular();
@@ -444,6 +460,17 @@ async function fillFormDropDownByIndex(mainElement: ElementFinder, tagName: stri
 
 async function selectRadioButton(mainElement: ElementFinder, tagName: string, option: number) {
   let list = mainElement.all(by.css(tagName));
+  //await expect(list.get(option).isPresent()).toBe(true);
   await list.get(option).click();
+  // .then(()=>{
+  //   expect(list.get(option).isSelected()).toBe(true);
+  // });
+  
+  browser.waitForAngular();
+}
+
+async function clickButton(clickableElement: ElementFinder) {
+  //await expect(clickableElement.isDisplayed()).toBeTruthy();
+  await clickableElement.click();
   browser.waitForAngular();
 }

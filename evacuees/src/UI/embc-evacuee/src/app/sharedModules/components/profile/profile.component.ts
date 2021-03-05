@@ -37,6 +37,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, AfterViewChecked
     private formCreationService: FormCreationService, private cd: ChangeDetectorRef,
     private alertService: AlertService,
     private profileDataService: ProfileDataService, private profileService: ProfileService) {
+      
     const navigation = this.router.getCurrentNavigation();
     if (navigation.extras.state !== undefined) {
       const state = navigation.extras.state as { stepIndex: number };

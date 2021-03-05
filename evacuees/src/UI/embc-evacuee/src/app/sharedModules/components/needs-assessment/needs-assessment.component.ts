@@ -39,6 +39,7 @@ export class NeedsAssessmentComponent implements OnInit, AfterViewInit, AfterVie
     private updateService: DataUpdationService, private needsAssessmentService: NeedsAssessmentService,
     private cd: ChangeDetectorRef, private route: ActivatedRoute,
     private alertService: AlertService, private nonVerifiedRegistrationService: NonVerifiedRegistrationService) {
+
     const navigation = this.router.getCurrentNavigation();
     if (navigation.extras.state !== undefined) {
       const state = navigation.extras.state as { stepIndex: number };
@@ -131,6 +132,7 @@ export class NeedsAssessmentComponent implements OnInit, AfterViewInit, AfterVie
       this.submitFile();
     } else {
       if (this.form.status === 'VALID') {
+        console.log(this.form);
         this.setFormData(component);
         this.form$.unsubscribe();
         stepper.selected.completed = true;

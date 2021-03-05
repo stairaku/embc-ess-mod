@@ -8,6 +8,7 @@ import { ProfileDataService } from '../profile/profile-data.service';
 import { ProfileService } from '../profile/profile.service';
 import { EditService } from './edit.service';
 
+
 @Component({
   selector: 'app-edit',
   templateUrl: './edit.component.html',
@@ -27,6 +28,7 @@ export class EditComponent implements OnInit, OnDestroy {
   verifiedRoute = '/verified-registration/create-profile';
 
   constructor(
+
     private router: Router, private route: ActivatedRoute,
     private formCreationService: FormCreationService, private profileService: ProfileService,
     private profileDataService: ProfileDataService,
